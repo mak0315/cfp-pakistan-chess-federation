@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pakistan Chess Rankings — FIDE Rating List | CFP</title>
+  <meta name="description" content="Live FIDE chess ratings and rankings for Pakistan. Standard, Rapid, Blitz, Women and Junior lists updated monthly." />
+  <link rel="icon" href="../images/cfp-logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .search-bar {
+      display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1; min-width: 200px;
+      padding: 12px 18px;
+      border: 1px solid var(--gray-light);
+      border-radius: var(--radius-sm);
+      font-size: 14px; font-family: var(--font-body);
+      background: var(--white); color: var(--gray-dark);
+      outline: none; transition: var(--transition);
+    }
+    .search-input:focus { border-color: var(--green-light); box-shadow: 0 0 0 3px rgba(42,138,64,0.1); }
+    .search-select {
+      padding: 12px 16px; border: 1px solid var(--gray-light);
+      border-radius: var(--radius-sm); font-size: 14px;
+      font-family: var(--font-body); background: var(--white);
+      color: var(--gray-dark); outline: none; cursor: pointer;
+    }
+    .fide-embed-box {
+      background: var(--white); border: 1px solid var(--gray-light);
+      border-radius: var(--radius-md); padding: 32px;
+      text-align: center; margin-top: 48px;
+    }
+    .fide-embed-box h3 {
+      font-family: var(--font-display); color: var(--green-deep);
+      font-size: 22px; margin-bottom: 12px;
+    }
+    .fide-embed-box p { color: var(--gray-mid); font-size: 15px; margin-bottom: 24px; }
+    .rating-card {
+      background: var(--white); border: 1px solid var(--gray-light);
+      border-radius: var(--radius-md); padding: 24px;
+      display: flex; align-items: center; gap: 20px;
+      transition: var(--transition);
+      margin-bottom: 12px;
+    }
+    .rating-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--gold); }
+    .rating-profile-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--green-deep); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0;
+      border: 2px solid var(--gold);
+    }
+    .rating-details { flex: 1; }
+    .rating-name { font-family: var(--font-accent); font-size: 17px; color: var(--green-deep); font-weight: 700; }
+    .rating-meta { font-size: 13px; color: var(--gray-mid); margin-top: 4px; }
+    .rating-elo-box { text-align: right; }
+    .big-elo { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--green-deep); }
+    .elo-type { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-mid); }
+    .page-tabs {
+      display: flex; gap: 0; border-bottom: 2px solid var(--gray-light);
+      margin-bottom: 32px; overflow-x: auto;
+    }
+    .page-tab {
+      padding: 14px 28px;
+      font-family: var(--font-display); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gray-mid); border: none; background: transparent;
+      cursor: pointer; border-bottom: 3px solid transparent;
+      margin-bottom: -2px; transition: var(--transition); white-space: nowrap;
+    }
+    .page-tab.active { color: var(--green-deep); border-bottom-color: var(--gold); }
+    .page-tab:hover { color: var(--green-deep); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .info-banner {
+      background: rgba(42,138,64,0.08); border: 1px solid rgba(42,138,64,0.25);
+      border-radius: var(--radius-md); padding: 18px 24px;
+      display: flex; gap: 14px; align-items: flex-start; margin-bottom: 28px;
+    }
+    .info-banner .icon { font-size: 22px; flex-shrink: 0; }
+    .info-banner p { font-size: 14px; color: var(--green-deep); line-height: 1.6; }
+    .info-banner a { color: var(--green-light); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <span>📧 <a href="mailto:amer.chess@gmail.com">amer.chess@gmail.com</a></span>
+    <span class="top-bar-sep">|</span>
+    <span>Affiliated with FIDE · ACF · Pakistan Sports Board</span>
+  </div>
+  <div class="top-bar-right">
+    <a href="https://www.facebook.com/ChessFederationOfPakistan/" target="_blank">Facebook</a>
+    <span class="top-bar-sep">|</span>
+    <a href="membership.html">Join CFP</a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="logo-wrap">
+      <img src="../images/cfp-logo.svg" alt="CFP Logo" class="logo-img" />
+      <div class="logo-text-wrap">
+        <div class="logo-title">Chess Federation</div>
+        <div class="logo-subtitle">of Pakistan — CFP</div>
+      </div>
+    </a>
+    <nav>
+      <div class="nav-item"><a href="../index.html" class="nav-link">Home</a></div>
+      <div class="nav-item"><a href="rankings.html" class="nav-link active">Rankings</a></div>
+      <div class="nav-item"><a href="tournaments.html" class="nav-link">Tournaments</a></div>
+      <div class="nav-item"><a href="officials.html" class="nav-link">Officials</a></div>
+      <div class="nav-item"><a href="about.html" class="nav-link">About</a></div>
+      <div class="nav-item"><a href="contact.html" class="nav-link">Contact</a></div>
+      <a href="membership.html" class="btn btn-primary" style="padding:10px 20px;font-size:11px;">♟ Join CFP</a>
+    </nav>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" style="display:none;">
+    <a href="../index.html">Home</a>
+    <a href="rankings.html">Rankings</a>
+    <a href="tournaments.html">Tournaments</a>
+    <a href="officials.html">Officials</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="breadcrumb"><a href="../index.html">Home</a> › Rankings</div>
+    <h1>Pakistan <span>Chess Rankings</span></h1>
+    <p>Official FIDE rating lists for all Pakistani chess players — Standard, Rapid, Blitz, Women, and Junior categories. Updated monthly.</p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<section>
+  <div class="container">
+
+    <div class="info-banner">
+      <span class="icon">ℹ️</span>
+      <p>
+        Rankings are sourced from the official <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" rel="noopener">FIDE Rating Database</a> and updated after each monthly FIDE list. The current list reflects <strong>May 2026</strong>. To see the complete list of all Pakistani players, visit the <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank">FIDE Pakistan page</a>.
+      </p>
+    </div>
+
+    <!-- Page Tabs -->
+    <div class="page-tabs" id="page-tabs">
+      <button class="page-tab active" data-tab="standard" id="tab-standard">Standard</button>
+      <button class="page-tab" data-tab="rapid" id="tab-rapid">Rapid</button>
+      <button class="page-tab" data-tab="blitz" id="tab-blitz">Blitz</button>
+      <button class="page-tab" data-tab="women" id="tab-women">Women</button>
+      <button class="page-tab" data-tab="junior" id="tab-junior">Juniors</button>
+      <button class="page-tab" data-tab="fide-embed" id="tab-fide-embed">FIDE Live ↗</button>
+    </div>
+
+    <!-- Standard -->
+    <div class="tab-content active" id="content-standard">
+      <div class="rankings-header" style="margin-bottom: 20px;">
+        <div>
+          <h2 class="section-title" style="font-size: 24px; margin-bottom: 0;">Standard Rating List — Pakistan</h2>
+          <p style="color: var(--gray-mid); font-size: 14px; margin-top: 6px;">Showing top rated Pakistani players | May 2026 FIDE List</p>
+        </div>
+        <span class="live-badge">May 2026</span>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="search-std" class="search-input" placeholder="Search player name..." oninput="filterRankings('std')" />
+        <select class="search-select" id="filter-std-title" onchange="filterRankings('std')">
+          <option value="">All Titles</option>
+          <option value="IM">International Master (IM)</option>
+          <option value="FM">FIDE Master (FM)</option>
+          <option value="CM">Candidate Master (CM)</option>
+          <option value="WCM">Woman Candidate Master</option>
+          <option value="AFM">FIDE Arena Master</option>
+        </select>
+      </div>
+
+      <div class="rankings-table-wrap">
+        <table class="rankings-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Rating</th>
+              <th>Change</th>
+              <th>Games</th>
+              <th>FIDE ID</th>
+              <th>Profile</th>
+            </tr>
+          </thead>
+          <tbody id="std-tbody">
+          </tbody>
+        </table>
+        <div class="rankings-footer">
+          <div class="update-info">
+            <div class="update-dot"></div>
+            <span>Source: FIDE May 2026 Rating List · ratings.fide.com</span>
+          </div>
+          <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" rel="noopener" class="read-more">View All on FIDE →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rapid -->
+    <div class="tab-content" id="content-rapid">
+      <div class="rankings-header" style="margin-bottom: 20px;">
+        <div>
+          <h2 class="section-title" style="font-size: 24px; margin-bottom: 0;">Rapid Rating List — Pakistan</h2>
+          <p style="color: var(--gray-mid); font-size: 14px; margin-top: 6px;">May 2026 FIDE Rapid List</p>
+        </div>
+        <span class="live-badge">May 2026</span>
+      </div>
+      <div class="rankings-table-wrap">
+        <table class="rankings-table">
+          <thead>
+            <tr><th>Rank</th><th>Player</th><th>Rapid Rating</th><th>Change</th><th>Games</th><th>Profile</th></tr>
+          </thead>
+          <tbody id="rapid-tbody"></tbody>
+        </table>
+        <div class="rankings-footer">
+          <div class="update-info"><div class="update-dot"></div><span>Source: FIDE May 2026 Rapid Rating List</span></div>
+          <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="read-more">View All on FIDE →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blitz -->
+    <div class="tab-content" id="content-blitz">
+      <div class="rankings-header" style="margin-bottom: 20px;">
+        <div>
+          <h2 class="section-title" style="font-size: 24px; margin-bottom: 0;">Blitz Rating List — Pakistan</h2>
+          <p style="color: var(--gray-mid); font-size: 14px; margin-top: 6px;">May 2026 FIDE Blitz List</p>
+        </div>
+        <span class="live-badge">May 2026</span>
+      </div>
+      <div class="rankings-table-wrap">
+        <table class="rankings-table">
+          <thead>
+            <tr><th>Rank</th><th>Player</th><th>Blitz Rating</th><th>Change</th><th>Games</th><th>Profile</th></tr>
+          </thead>
+          <tbody id="blitz-tbody"></tbody>
+        </table>
+        <div class="rankings-footer">
+          <div class="update-info"><div class="update-dot"></div><span>Source: FIDE May 2026 Blitz Rating List</span></div>
+          <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="read-more">View All on FIDE →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Women -->
+    <div class="tab-content" id="content-women">
+      <div class="rankings-header" style="margin-bottom: 20px;">
+        <div>
+          <h2 class="section-title" style="font-size: 24px; margin-bottom: 0;">Women's Rating List — Pakistan</h2>
+          <p style="color: var(--gray-mid); font-size: 14px; margin-top: 6px;">May 2026 FIDE Women's List</p>
+        </div>
+        <span class="live-badge">May 2026</span>
+      </div>
+      <div class="rankings-table-wrap">
+        <table class="rankings-table">
+          <thead>
+            <tr><th>Rank</th><th>Player</th><th>Rating</th><th>Change</th><th>Games</th><th>Profile</th></tr>
+          </thead>
+          <tbody id="women-tbody"></tbody>
+        </table>
+        <div class="rankings-footer">
+          <div class="update-info"><div class="update-dot"></div><span>Source: FIDE May 2026 Women's Rating List</span></div>
+          <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="read-more">View All on FIDE →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Junior -->
+    <div class="tab-content" id="content-junior">
+      <div class="rankings-header" style="margin-bottom: 20px;">
+        <div>
+          <h2 class="section-title" style="font-size: 24px; margin-bottom: 0;">Junior Rankings — Pakistan</h2>
+          <p style="color: var(--gray-mid); font-size: 14px; margin-top: 6px;">Top Pakistani players under 20</p>
+        </div>
+        <span class="live-badge">May 2026</span>
+      </div>
+      <div class="rankings-table-wrap">
+        <table class="rankings-table">
+          <thead>
+            <tr><th>Rank</th><th>Player</th><th>Rating</th><th>Age Group</th><th>Games</th><th>Profile</th></tr>
+          </thead>
+          <tbody id="junior-tbody">
+            <tr><td class="rank-number">1</td><td><span class="player-name">Rayaan Rehman</span></td><td><span class="elo-rating">1658</span></td><td>U18</td><td>24</td><td><a href="https://ratings.fide.com/profile/7833520" target="_blank" class="fide-link">FIDE ↗</a></td></tr>
+            <tr><td class="rank-number">2</td><td><span class="player-name">Muhammad Azan</span></td><td><span class="elo-rating">1527</span></td><td>U16</td><td>18</td><td><a href="https://ratings.fide.com/profile/7833709" target="_blank" class="fide-link">FIDE ↗</a></td></tr>
+            <tr><td class="rank-number">3</td><td><span class="player-title wcm">WCM</span><span class="player-name">Aayat Asmi</span></td><td><span class="elo-rating">1547</span></td><td>U20 (W)</td><td>28</td><td><a href="https://ratings.fide.com/profile/7810776" target="_blank" class="fide-link">FIDE ↗</a></td></tr>
+            <tr><td class="rank-number">4</td><td><span class="player-name">Ashaz Merchant</span></td><td><span class="elo-rating">1483</span></td><td>U14</td><td>20</td><td><a href="https://ratings.fide.com/profile/7808518" target="_blank" class="fide-link">FIDE ↗</a></td></tr>
+            <tr><td class="rank-number">5</td><td><span class="player-name">Abdullah Ahmad Yahya</span></td><td><span class="elo-rating">1591</span></td><td>U20</td><td>15</td><td><a href="https://ratings.fide.com/profile/7839090" target="_blank" class="fide-link">FIDE ↗</a></td></tr>
+          </tbody>
+        </table>
+        <div class="rankings-footer">
+          <div class="update-info"><div class="update-dot"></div><span>Source: FIDE May 2026 Rating List</span></div>
+          <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="read-more">View All on FIDE →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIDE Live Embed -->
+    <div class="tab-content" id="content-fide-embed">
+      <div class="fide-embed-box">
+        <h3>🌐 FIDE Live Rankings — Pakistan</h3>
+        <p>View the complete, always-updated FIDE rating list for all Pakistani players directly on the official FIDE website.</p>
+        <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" rel="noopener" class="btn btn-primary" style="display:inline-flex;">
+          Open FIDE Pakistan Rankings ↗
+        </a>
+        <div style="margin-top: 32px; background: var(--off-white); border-radius: var(--radius-md); padding: 24px;">
+          <p style="font-size: 13px; color: var(--gray-mid);">
+            <strong>Direct Links to FIDE Lists:</strong>
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; justify-content: center;">
+            <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="btn btn-outline" style="color: var(--green-deep); border-color: var(--green-light); padding: 10px 18px; font-size: 11px;">Standard List</a>
+            <a href="https://ratings.fide.com/rankings.phtml?country=PAK&rating_type=rapid" target="_blank" class="btn btn-outline" style="color: var(--green-deep); border-color: var(--green-light); padding: 10px 18px; font-size: 11px;">Rapid List</a>
+            <a href="https://ratings.fide.com/rankings.phtml?country=PAK&rating_type=blitz" target="_blank" class="btn btn-outline" style="color: var(--green-deep); border-color: var(--green-light); padding: 10px 18px; font-size: 11px;">Blitz List</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIDE Rating History Info -->
+    <div style="background: var(--white); border: 1px solid var(--gray-light); border-radius: var(--radius-md); padding: 32px; margin-top: 48px;">
+      <h3 style="font-family: var(--font-display); color: var(--green-deep); font-size: 20px; margin-bottom: 16px;">🏅 Pakistan's Titled Players</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
+        <div class="rating-card">
+          <div class="rating-profile-icon">♞</div>
+          <div class="rating-details">
+            <div class="rating-name">Mahmood Lodhi</div>
+            <div class="rating-meta"><span class="player-title im">IM</span> International Master</div>
+            <div class="rating-meta" style="margin-top: 4px;">Peak: 2438 (July 2000) · 16x National Champion</div>
+          </div>
+          <div class="rating-elo-box">
+            <div class="big-elo">2150</div>
+            <div class="elo-type">FIDE Std</div>
+          </div>
+        </div>
+        <div class="rating-card">
+          <div class="rating-profile-icon">♝</div>
+          <div class="rating-details">
+            <div class="rating-name">Amer Karim</div>
+            <div class="rating-meta"><span class="player-title fm">FM</span> FIDE Master</div>
+            <div class="rating-meta" style="margin-top: 4px;">Peak: 2288 (Jul 2006) · 6 Olympiads · 2022 Nat. Champion</div>
+          </div>
+          <div class="rating-elo-box">
+            <div class="big-elo">2085</div>
+            <div class="elo-type">FIDE Std</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-main">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img src="../images/cfp-logo.svg" alt="CFP Logo" />
+        <div class="logo-text-wrap">
+          <div class="logo-title">Chess Federation</div>
+          <div class="logo-subtitle">of Pakistan — CFP</div>
+        </div>
+      </div>
+      <p class="footer-desc">National governing body for chess in Pakistan since 1957. FIDE-affiliated since 1973.</p>
+      <div class="social-links">
+        <a href="https://www.facebook.com/ChessFederationOfPakistan/" target="_blank" class="social-link">f</a>
+        <a href="https://www.chess.com/club/chess-federation-of-pakistan-official" target="_blank" class="social-link">♟</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Rankings</h4>
+      <ul>
+        <li><a href="rankings.html">Pakistan Rankings</a></li>
+        <li><a href="rankings.html">Women's List</a></li>
+        <li><a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank">FIDE Full List ↗</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="tournaments.html">Tournaments</a></li>
+        <li><a href="officials.html">Officials</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="membership.html">Join CFP</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:amer.chess@gmail.com">amer.chess@gmail.com</a></li>
+        <li><a href="https://www.facebook.com/ChessFederationOfPakistan/" target="_blank">Facebook Page</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Chess Federation of Pakistan. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+  // Extended rankings data for this page
+  const extendedRankings = {
+    std: [
+      { rank:1,  name:'Mahmood Lodhi',       title:'IM',  rating:2150, fideId:'7800010', change:+2,  games:12 },
+      { rank:2,  name:'Amer Karim',           title:'FM',  rating:2085, fideId:'7800053', change:-3,  games:8  },
+      { rank:3,  name:'Diviyansh Kumar Punshi',title:'',   rating:1782, fideId:'7835760', change:+8,  games:18 },
+      { rank:4,  name:'Muhammad Ahmad Mirza', title:'',    rating:1746, fideId:'7825145', change:+15, games:22 },
+      { rank:5,  name:'Ijlal Amer',           title:'',    rating:1712, fideId:'7811624', change:0,   games:14 },
+      { rank:6,  name:'Syeda Daanya Zubair',  title:'WCM', rating:1668, fideId:'7831145', change:+5,  games:20 },
+      { rank:7,  name:'Rayaan Rehman',        title:'AFM', rating:1658, fideId:'7833520', change:+12, games:24 },
+      { rank:8,  name:'Barlas Raza Saghir',   title:'',    rating:1621, fideId:'7801416', change:-6,  games:10 },
+      { rank:9,  name:'Muhammad Hamza Rizwan',title:'',    rating:1612, fideId:'7831064', change:+3,  games:16 },
+      { rank:10, name:'Aayat Asmi',           title:'WCM', rating:1547, fideId:'7810776', change:+18, games:28 },
+      { rank:11, name:'Muhammad Azan',        title:'',    rating:1527, fideId:'7833709', change:+2,  games:14 },
+      { rank:12, name:'Khalid Mahmood Asim',  title:'',    rating:1523, fideId:'7836937', change:-1,  games:10 },
+      { rank:13, name:'Ashaz Merchant',       title:'AFM', rating:1483, fideId:'7808518', change:+7,  games:18 },
+      { rank:14, name:'Ahsan Aqil Malik',     title:'',    rating:1441, fideId:'7833180', change:+4,  games:12 },
+      { rank:15, name:'Asher Asif Iqbal',     title:'',    rating:1419, fideId:'7822391', change:-2,  games:8  },
+    ],
+    rapid: [
+      { rank:1, name:'Amer Karim',           title:'FM',  rating:2110, fideId:'7800053', change:0,   games:6  },
+      { rank:2, name:'Mahmood Lodhi',        title:'IM',  rating:2080, fideId:'7800010', change:+5,  games:9  },
+      { rank:3, name:'Diviyansh Kumar',      title:'',    rating:1820, fideId:'7835760', change:+10, games:14 },
+      { rank:4, name:'Muhammad Ahmad Mirza', title:'',    rating:1790, fideId:'7825145', change:-2,  games:11 },
+      { rank:5, name:'Ijlal Amer',           title:'',    rating:1740, fideId:'7811624', change:+7,  games:17 },
+      { rank:6, name:'Rayaan Rehman',        title:'AFM', rating:1700, fideId:'7833520', change:+4,  games:21 },
+      { rank:7, name:'Syeda Daanya Zubair',  title:'WCM', rating:1690, fideId:'7831145', change:-1,  games:13 },
+      { rank:8, name:'Muhammad Hamza Rizwan',title:'',    rating:1650, fideId:'7831064', change:+9,  games:19 },
+      { rank:9, name:'Aayat Asmi',           title:'WCM', rating:1590, fideId:'7810776', change:+14, games:25 },
+      { rank:10,name:'Barlas Raza Saghir',   title:'',    rating:1570, fideId:'7801416', change:-4,  games:8  },
+    ],
+    blitz: [
+      { rank:1, name:'Amer Karim',           title:'FM',  rating:2180, fideId:'7800053', change:+8,  games:32 },
+      { rank:2, name:'Mahmood Lodhi',        title:'IM',  rating:1990, fideId:'7800010', change:-5,  games:18 },
+      { rank:3, name:'Diviyansh Kumar',      title:'',    rating:1870, fideId:'7835760', change:+22, games:45 },
+      { rank:4, name:'Muhammad Ahmad Mirza', title:'',    rating:1810, fideId:'7825145', change:+3,  games:38 },
+      { rank:5, name:'Ijlal Amer',           title:'',    rating:1780, fideId:'7811624', change:+11, games:40 },
+      { rank:6, name:'Rayaan Rehman',        title:'AFM', rating:1750, fideId:'7833520', change:+16, games:52 },
+      { rank:7, name:'Syeda Daanya Zubair',  title:'WCM', rating:1710, fideId:'7831145', change:+7,  games:30 },
+      { rank:8, name:'Muhammad Hamza Rizwan',title:'',    rating:1690, fideId:'7831064', change:-8,  games:28 },
+      { rank:9, name:'Aayat Asmi',           title:'WCM', rating:1640, fideId:'7810776', change:+25, games:60 },
+      { rank:10,name:'Barlas Raza Saghir',   title:'',    rating:1620, fideId:'7801416', change:-12, games:22 },
+    ],
+    women: [
+      { rank:1, name:'Syeda Daanya Zubair',  title:'WCM', rating:1668, fideId:'7831145', change:+5,  games:20 },
+      { rank:2, name:'Aayat Asmi',           title:'WCM', rating:1547, fideId:'7810776', change:+18, games:28 },
+      { rank:3, name:'Aleena Raza',          title:'',    rating:1380, fideId:'7808500', change:+8,  games:15 },
+      { rank:4, name:'Hafsa Tariq',          title:'',    rating:1310, fideId:'7812200', change:+12, games:22 },
+      { rank:5, name:'Rimsha Saleem',        title:'',    rating:1280, fideId:'7815600', change:+4,  games:18 },
+    ]
+  };
+
+  function renderTable(tbodyId, data, extraCol) {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    const titleMap = { 'IM':'im','FM':'fm','CM':'cm','WCM':'wcm','AFM':'fm','WFM':'wcm' };
+    tbody.innerHTML = data.map((p, i) => {
+      const titleHtml = p.title ? `<span class="player-title ${titleMap[p.title]||''}">${p.title}</span>` : '';
+      const changeHtml = p.change > 0
+        ? `<span class="rating-change up">▲ ${p.change}</span>`
+        : p.change < 0
+          ? `<span class="rating-change down">▼ ${Math.abs(p.change)}</span>`
+          : `<span class="rating-change same">—</span>`;
+      return `
+        <tr class="rank-${i+1}">
+          <td><div class="rank-number">${i===0?'🥇':i===1?'🥈':i===2?'🥉':p.rank}</div></td>
+          <td>${titleHtml}<span class="player-name">${p.name}</span></td>
+          <td><span class="elo-rating">${p.rating}</span></td>
+          <td>${changeHtml}</td>
+          <td>${p.games}</td>
+          ${extraCol ? `<td>${p.fideId}</td>` : ''}
+          <td><a href="https://ratings.fide.com/profile/${p.fideId}" target="_blank" class="fide-link">FIDE ↗</a></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  renderTable('std-tbody', extendedRankings.std, true);
+  renderTable('rapid-tbody', extendedRankings.rapid, false);
+  renderTable('blitz-tbody', extendedRankings.blitz, false);
+  renderTable('women-tbody', extendedRankings.women, false);
+
+  // Page tab switching
+  document.querySelectorAll('.page-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      const content = document.getElementById('content-' + tab.dataset.tab);
+      if (content) content.classList.add('active');
+    });
+  });
+
+  // Search filter
+  let stdCache = [...extendedRankings.std];
+  function filterRankings(type) {
+    if (type !== 'std') return;
+    const search = document.getElementById('search-std').value.toLowerCase();
+    const titleFilter = document.getElementById('filter-std-title').value;
+    let filtered = stdCache.filter(p => {
+      const nameMatch = p.name.toLowerCase().includes(search);
+      const titleMatch = titleFilter ? p.title === titleFilter : true;
+      return nameMatch && titleMatch;
+    });
+    renderTable('std-tbody', filtered, true);
+  }
+</script>
+</body>
+</html>
