@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Federation of Pakistan — CFP</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#0a0a0a',
+                        darker: '#050505',
+                        light: '#f5f5f5',
+                        silver: '#b0b0b0',
+                    },
+                    animation: {
+                        'float-slow': 'float 15s ease-in-out infinite',
+                        'float-medium': 'float 10s ease-in-out infinite',
+                        'float-fast': 'float 7s ease-in-out infinite',
+                        'fade-in': 'fadeIn 2s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-30px) rotate(5deg)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f5f5f5; /* Light theme for hero, matching first image */
+            color: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        /* Dark Theme Classes */
+        .theme-dark {
+            background-color: #0a0a0a;
+            color: #f5f5f5;
+        }
+
+        .theme-dark .border-theme {
+            border-color: #333;
+        }
+
+        .theme-dark .text-theme-muted {
+            color: #b0b0b0;
+        }
+
+        /* Floating Chess Pieces Container */
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .chess-piece {
+            position: absolute;
+            font-size: 8rem;
+            color: #111;
+            opacity: 0.05;
+            user-select: none;
+            filter: blur(2px);
+        }
+
+        .piece-1 { top: 10%; left: 5%; animation: float-slow 20s infinite; font-size: 12rem; }
+        .piece-2 { top: 60%; left: 15%; animation: float-medium 15s infinite; transform: rotate(15deg); font-size: 10rem; }
+        .piece-3 { top: 20%; right: 10%; animation: float-fast 18s infinite; transform: rotate(-20deg); font-size: 15rem; filter: blur(4px); opacity: 0.03;}
+        .piece-4 { top: 70%; right: 20%; animation: float-slow 25s infinite; font-size: 8rem; }
+        
+        .dark-piece {
+            color: #fff;
+            opacity: 0.03;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        .glass-nav {
+            background: rgba(245, 245, 245, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .theme-dark .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+            letter-spacing: 0.1em;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-elegant {
+            border: 1px solid currentColor;
+            padding: 12px 32px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-elegant:hover {
+            background: currentColor;
+            color: #f5f5f5; /* Inverted on hover, handled by JS/CSS specifics */
+        }
+        
+        .theme-dark .btn-elegant:hover {
+            color: #0a0a0a;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 40px;
+            background-color: currentColor;
+            opacity: 0.2;
+        }
+        
+        /* Premium Image Styling */
+        .premium-img-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .premium-img-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans selection:bg-dark selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-colors duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 h-24 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-4 group">
+                <img src="images/cfp main logo.png" class="logo-img group-hover:opacity-80 transition-opacity">
+                <div class="flex flex-col hidden sm:flex">
+                    <span class="font-serif font-semibold tracking-widest text-sm uppercase">Chess Federation</span>
+                    <span class="text-xs tracking-[0.2em] opacity-70 uppercase">of Pakistan</span>
+                </div>
+            </a>
+
+            <div class="hidden md:flex items-center gap-10 font-medium">
+                <a href="#rankings" class="nav-link">Rankings</a>
+                <a href="#officials" class="nav-link">Officials</a>
+                <a href="#details" class="nav-link">The Details</a>
+                <a href="mailto:amer.chess@gmail.com" class="btn-elegant hover:bg-dark hover:text-white">Contact Us</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" aria-label="Toggle Menu" class="md:hidden opacity-70 hover:opacity-100 p-2 z-[60] relative text-currentColor">
+                <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-dark/95 backdrop-blur-xl z-[55] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="flex flex-col items-center gap-8 text-white font-serif text-2xl tracking-widest uppercase text-center">
+            <a href="#rankings" class="mobile-link hover:text-silver transition-colors">Rankings</a>
+            <a href="#officials" class="mobile-link hover:text-silver transition-colors">Officials</a>
+            <a href="#details" class="mobile-link hover:text-silver transition-colors">The Details</a>
+            <a href="mailto:amer.chess@gmail.com" class="btn-elegant mt-4 text-sm text-white border-white hover:bg-white hover:text-dark">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Hero Section (Light Theme) -->
+    <section class="relative min-h-screen flex items-center justify-center pt-32 md:pt-24 pb-12 overflow-hidden">
+        <!-- Animated Background Pieces -->
+        <div class="animation-container hidden sm:block">
+            <div class="chess-piece piece-1">♜</div>
+            <div class="chess-piece piece-2">♞</div>
+            <div class="chess-piece piece-3">♛</div>
+            <div class="chess-piece piece-4">♟</div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+            
+            <div class="w-full lg:w-1/2 opacity-0 animate-fade-in text-center lg:text-left flex flex-col items-center lg:items-start" style="animation-delay: 0.2s;">
+                <h3 class="text-xs tracking-[0.4em] uppercase text-gray-500 mb-6">Est. 1957 · FIDE Since 1973</h3>
+                <h1 class="font-serif text-4xl sm:text-5xl lg:text-7xl leading-tight mb-8 font-light">
+                    Chess.<br>
+                    Federation.<br>
+                    <span class="font-semibold">of Pakistan.</span>
+                </h1>
+                <p class="text-gray-600 font-light leading-relaxed max-w-md mb-10 text-sm tracking-wide">
+                    The national governing body for chess in Pakistan. Promoting, developing, and advancing the game across every province from grassroots to grandmaster.
+                </p>
+                <div class="flex items-center gap-8 w-full sm:w-auto">
+                    <a href="#rankings" class="btn-elegant hover:bg-dark hover:text-white text-center w-full sm:w-auto">Explore Rankings</a>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-1/2 flex justify-center opacity-0 animate-fade-in" style="animation-delay: 0.6s;">
+                <!-- Abstract 3D-like Chess Representation using unicode and CSS -->
+                <div class="relative w-full aspect-square max-w-sm lg:max-w-lg flex items-center justify-center">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-gray-200 to-transparent rounded-full blur-3xl opacity-50"></div>
+                    <div class="text-[10rem] sm:text-[14rem] lg:text-[18rem] text-dark drop-shadow-2xl transform transition-transform hover:scale-105 hover:rotate-3 duration-700">
+                        ♚
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
+            <span class="text-[0.6rem] uppercase tracking-widest">Scroll</span>
+            <div class="w-[1px] h-8 bg-dark"></div>
+        </div>
+    </section>
+
+    <!-- Transition Section -->
+    <div class="h-32 bg-gradient-to-b from-light to-dark"></div>
+
+    <!-- Details Section (Dark Theme) -->
+    <section id="details" class="theme-dark py-24 relative overflow-hidden transition-colors duration-500">
+        <!-- Animated Background Pieces -->
+        <div class="animation-container">
+            <div class="chess-piece dark-piece piece-1">♝</div>
+            <div class="chess-piece dark-piece piece-2">♚</div>
+            <div class="chess-piece dark-piece piece-3" style="font-size: 20rem; top: 10%; right: -5%;">♜</div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+                <!-- Left Side: Visuals -->
+                <div class="relative h-full min-h-[300px] lg:min-h-[400px] flex items-center justify-center">
+                   <div class="grid grid-cols-2 gap-4 w-full max-w-md mx-auto lg:max-w-none">
+                       <div class="bg-darker aspect-[3/4] flex flex-col items-center justify-center border border-gray-900 p-6 sm:p-8 hover:border-gray-700 transition-colors">
+                           <span class="text-5xl sm:text-7xl mb-6 text-white drop-shadow-lg">♛</span>
+                           <h4 class="font-serif tracking-[0.2em] text-xs sm:text-sm mb-2 text-center">QUEEN</h4>
+                           <p class="text-[0.6rem] text-center text-gray-500 uppercase tracking-wider">Most Powerful Piece</p>
+                       </div>
+                       <div class="bg-darker aspect-[3/4] flex flex-col items-center justify-center border border-gray-900 p-6 sm:p-8 hover:border-gray-700 transition-colors translate-y-8 sm:translate-y-12">
+                           <span class="text-5xl sm:text-7xl mb-6 text-white drop-shadow-lg">♞</span>
+                           <h4 class="font-serif tracking-[0.2em] text-xs sm:text-sm mb-2 text-center">KNIGHT</h4>
+                           <p class="text-[0.6rem] text-center text-gray-500 uppercase tracking-wider">Unusual Move</p>
+                       </div>
+                   </div>
+                </div>
+
+                <!-- Right Side: Text -->
+                <div class="flex flex-col justify-center text-center lg:text-left mt-8 lg:mt-0">
+                    <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-light mb-10 tracking-widest uppercase flex flex-col items-center lg:items-start">
+                        The Details
+                        <div class="w-12 h-1 bg-white mt-6"></div>
+                    </h2>
+                    
+                    <ul class="space-y-6 text-sm font-light tracking-wide text-silver mx-auto lg:mx-0 inline-block text-left">
+                        <li class="flex items-center gap-4">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white block flex-shrink-0"></span>
+                            Official FIDE synchronization and real-time updates
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white block flex-shrink-0"></span>
+                            National performance index tracking
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white block flex-shrink-0"></span>
+                            Over 1,480 rated players nationwide
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white block flex-shrink-0"></span>
+                            Active Grandmaster norms registry
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white block flex-shrink-0"></span>
+                            Governing body of professional chess in Pakistan
+                        </li>
+                    </ul>
+
+                    <div class="mt-12 lg:mt-16 flex flex-wrap justify-center lg:justify-start gap-8 lg:gap-12 border-t border-gray-800 pt-8">
+                        <div class="text-center lg:text-left">
+                            <div class="text-3xl font-serif mb-1 text-white">1,482</div>
+                            <div class="text-[0.65rem] uppercase tracking-widest text-gray-500">Rated Players</div>
+                        </div>
+                        <div class="stat-divider hidden sm:block"></div>
+                        <div class="text-center lg:text-left">
+                            <div class="text-3xl font-serif mb-1 text-white">1642</div>
+                            <div class="text-[0.65rem] uppercase tracking-widest text-gray-500">National Avg</div>
+                        </div>
+                        <div class="stat-divider hidden sm:block"></div>
+                        <div class="text-center lg:text-left">
+                            <div class="text-3xl font-serif mb-1 text-white">04</div>
+                            <div class="text-[0.65rem] uppercase tracking-widest text-gray-500">Active GM Norms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rankings Preview (Dark Theme) -->
+    <section id="rankings" class="theme-dark py-24 border-t border-gray-900 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16">
+                <h3 class="text-xs tracking-[0.4em] uppercase text-gray-500 mb-4">Official Classification</h3>
+                <h2 class="font-serif text-3xl md:text-4xl tracking-widest uppercase">Top Performers</h2>
+            </div>
+
+            <div class="overflow-x-auto max-w-4xl mx-auto pb-4">
+                <table class="w-full text-left border-collapse min-w-[600px]">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-[0.7rem] uppercase tracking-widest text-gray-500">
+                            <th class="py-6 px-4 font-normal">Rank</th>
+                            <th class="py-6 px-4 font-normal">Player Name</th>
+                            <th class="py-6 px-4 font-normal">Title</th>
+                            <th class="py-6 px-4 font-normal text-right">FIDE Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-light text-sm tracking-wide">
+                        <tr class="border-b border-gray-900 hover:bg-darker transition-colors group">
+                            <td class="py-6 px-4 font-serif text-white group-hover:text-silver transition-colors">01</td>
+                            <td class="py-6 px-4">Mahmood Lodhi</td>
+                            <td class="py-6 px-4"><span class="border border-gray-700 px-2 py-1 text-[0.65rem] tracking-widest">IM</span></td>
+                            <td class="py-6 px-4 text-right font-serif">2314</td>
+                        </tr>
+                        <tr class="border-b border-gray-900 hover:bg-darker transition-colors group">
+                            <td class="py-6 px-4 font-serif text-gray-500 group-hover:text-silver transition-colors">02</td>
+                            <td class="py-6 px-4">Amer Karim</td>
+                            <td class="py-6 px-4"><span class="border border-gray-700 px-2 py-1 text-[0.65rem] tracking-widest">FM</span></td>
+                            <td class="py-6 px-4 text-right font-serif">2285</td>
+                        </tr>
+                        <tr class="border-b border-gray-900 hover:bg-darker transition-colors group">
+                            <td class="py-6 px-4 font-serif text-gray-500 group-hover:text-silver transition-colors">03</td>
+                            <td class="py-6 px-4">Waqar Ahmad</td>
+                            <td class="py-6 px-4"><span class="border border-gray-700 px-2 py-1 text-[0.65rem] tracking-widest">CM</span></td>
+                            <td class="py-6 px-4 text-right font-serif">2210</td>
+                        </tr>
+                        <tr class="border-b border-gray-900 hover:bg-darker transition-colors group">
+                            <td class="py-6 px-4 font-serif text-gray-500 group-hover:text-silver transition-colors">04</td>
+                            <td class="py-6 px-4">M. Shahzad</td>
+                            <td class="py-6 px-4"><span class="border border-gray-700 px-2 py-1 text-[0.65rem] tracking-widest">FM</span></td>
+                            <td class="py-6 px-4 text-right font-serif">2198</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" rel="noopener noreferrer" class="btn-elegant inline-block hover:bg-white hover:text-dark border-gray-700 text-gray-300">View Full Rankings on FIDE</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Officials Section -->
+    <section id="officials" class="theme-dark py-24 border-t border-gray-900 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16">
+                <h3 class="text-xs tracking-[0.4em] uppercase text-gray-500 mb-4">Leadership</h3>
+                <h2 class="font-serif text-3xl md:text-4xl tracking-widest uppercase">Executive Committee</h2>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
+                <div class="text-center group">
+                    <div class="text-4xl mb-4 text-white opacity-50 group-hover:opacity-100 transition-opacity">♔</div>
+                    <h4 class="font-serif text-lg tracking-widest mb-1 text-white">Hanif Qureshi</h4>
+                    <p class="text-[0.65rem] uppercase tracking-widest text-gray-500">President, CFP</p>
+                </div>
+                <div class="text-center group">
+                    <div class="text-4xl mb-4 text-white opacity-50 group-hover:opacity-100 transition-opacity">♕</div>
+                    <h4 class="font-serif text-lg tracking-widest mb-1 text-white">M. Saleem Akhtar</h4>
+                    <p class="text-[0.65rem] uppercase tracking-widest text-gray-500">Senior Vice-President</p>
+                </div>
+                <div class="text-center group">
+                    <div class="text-4xl mb-4 text-white opacity-50 group-hover:opacity-100 transition-opacity">♖</div>
+                    <h4 class="font-serif text-lg tracking-widest mb-1 text-white">Ejaz Ahmad</h4>
+                    <p class="text-[0.65rem] uppercase tracking-widest text-gray-500">Vice-President</p>
+                </div>
+                <div class="text-center group">
+                    <div class="text-4xl mb-4 text-white opacity-50 group-hover:opacity-100 transition-opacity">♗</div>
+                    <h4 class="font-serif text-lg tracking-widest mb-1 text-white">Masood Zaman</h4>
+                    <p class="text-[0.65rem] uppercase tracking-widest text-gray-500">Vice-President</p>
+                </div>
+                <div class="text-center group">
+                    <div class="text-4xl mb-4 text-white opacity-50 group-hover:opacity-100 transition-opacity">♘</div>
+                    <h4 class="font-serif text-lg tracking-widest mb-1 text-white">Amer Karim</h4>
+                    <p class="text-[0.65rem] uppercase tracking-widest text-gray-500">Acting General Sec (FM)</p>
+                </div>
+                <div class="text-center group">
+                    <div class="text-4xl mb-4 text-white opacity-50 group-hover:opacity-100 transition-opacity">♙</div>
+                    <h4 class="font-serif text-lg tracking-widest mb-1 text-white">Muhammad Waqar</h4>
+                    <p class="text-[0.65rem] uppercase tracking-widest text-gray-500">Rating & Dev Officer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Affiliations Section -->
+    <section class="theme-dark py-24 border-t border-gray-900 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+             <h3 class="text-xs tracking-[0.4em] uppercase text-gray-500 mb-12">Official Affiliations</h3>
+             <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-24 opacity-60">
+                 <a href="https://www.fide.com" target="_blank" class="hover:opacity-100 transition-opacity font-serif tracking-widest text-sm uppercase flex items-center gap-2">♟ FIDE</a>
+                 <a href="https://www.asianchess.com" target="_blank" class="hover:opacity-100 transition-opacity font-serif tracking-widest text-sm uppercase flex items-center gap-2">♜ Asian Chess Fed</a>
+                 <span class="font-serif tracking-widest text-sm uppercase flex items-center gap-2">♞ Commonwealth Chess</span>
+                 <a href="https://www.sports.gov.pk" target="_blank" class="hover:opacity-100 transition-opacity font-serif tracking-widest text-sm uppercase flex items-center gap-2">🏅 Pak Sports Board</a>
+             </div>
+        </div>
+    </section>
+
+    <!-- Chess Board Pattern Footer Section -->
+    <section class="py-32 relative bg-dark border-t border-gray-900 overflow-hidden">
+        <!-- Abstract Board Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff); background-size: 100px 100px; background-position: 0 0, 50px 50px;"></div>
+        
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="font-serif text-2xl md:text-4xl tracking-[0.2em] uppercase text-white mb-6">Circle to Square</h2>
+            <p class="text-gray-400 text-xs tracking-widest uppercase mb-10">Strategy. Discipline. Rank.</p>
+            <a href="#" class="btn-elegant inline-block hover:bg-white hover:text-dark border-white text-white">Join The Federation</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="theme-dark bg-darker py-16 border-t border-gray-900">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="md:col-span-2">
+                    <img src="images/cfp main logo.png" alt="CFP Logo" class="logo-img mb-6 opacity-80 filter grayscale">
+                    <p class="text-sm font-light tracking-wide text-gray-500 max-w-sm mb-6">
+                        The governing body of professional chess in Pakistan. Affiliated with FIDE, developing the game across all provinces since 1957.
+                    </p>
+                    <div class="flex flex-col gap-2 text-xs tracking-widest text-gray-400 font-light">
+                        <a href="mailto:amer.chess@gmail.com" class="hover:text-white transition-colors">✉ amer.chess@gmail.com</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-serif text-xs tracking-widest uppercase mb-6 text-white">Socials</h4>
+                    <ul class="space-y-4 text-xs tracking-wider font-light text-gray-500">
+                        <li><a href="https://www.facebook.com/ChessFederationOfPakistan/" target="_blank" class="hover:text-white transition-colors">Facebook</a></li>
+                        <li><a href="https://chat.whatsapp.com/LeqenrPFHoOBIs8skIfuNH" target="_blank" class="hover:text-white transition-colors">WhatsApp Group</a></li>
+                        <li><a href="https://www.chess.com/club/chess-federation-of-pakistan-official" target="_blank" class="hover:text-white transition-colors">Chess.com Club</a></li>
+                        <li><a href="https://lichess.org/team/chess-federation-of-pakistan" target="_blank" class="hover:text-white transition-colors">Lichess Team</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-serif text-xs tracking-widest uppercase mb-6 text-white">Explore</h4>
+                    <ul class="space-y-4 text-xs tracking-wider font-light text-gray-500">
+                        <li><a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="hover:text-white transition-colors">FIDE Ratings</a></li>
+                        <li><a href="#officials" class="hover:text-white transition-colors">Officials</a></li>
+                        <li><a href="https://cfpofficial.com/contact" target="_blank" class="hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-gray-900 text-[0.65rem] tracking-widest text-gray-600 uppercase">
+                <p>&copy; 2026 Chess Federation of Pakistan.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="https://www.facebook.com/ChessFederationOfPakistan/" target="_blank" class="hover:text-white transition-colors">Facebook</a>
+                    <a href="https://ratings.fide.com/rankings.phtml?country=PAK" target="_blank" class="hover:text-white transition-colors">FIDE Profile</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Navigation Background -->
+    <script>
+        // Change nav background on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const detailsSection = document.getElementById('details');
+            
+            if (window.scrollY > 50) {
+                // If we've scrolled past the top
+                nav.classList.add('border-b');
+                
+                // Check if we are over the dark section to swap nav theme
+                if (detailsSection) {
+                    const rect = detailsSection.getBoundingClientRect();
+                    if (rect.top <= 80) { // 80 is approx nav height
+                        nav.parentElement.classList.add('theme-dark');
+                    } else {
+                        nav.parentElement.classList.remove('theme-dark');
+                    }
+                }
+            } else {
+                nav.classList.remove('border-b');
+            }
+        });
+
+        // Parallax effect for floating pieces on mouse move
+        document.addEventListener('mousemove', (e) => {
+            // Disable parallax on mobile for performance
+            if(window.innerWidth < 768) return;
+            
+            const pieces = document.querySelectorAll('.chess-piece');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            pieces.forEach((piece, index) => {
+                const speed = (index + 1) * 20;
+                piece.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+
+        // Mobile Menu Toggle Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+        const toggleMenu = () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = 'hidden';
+                mobileMenuBtn.innerHTML = '<svg class="w-6 h-6 transition-transform duration-300 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else {
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+                mobileMenuBtn.innerHTML = '<svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            }
+        };
+
+        if(mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMenu);
+        }
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+    </script>
+</body>
+</html>
